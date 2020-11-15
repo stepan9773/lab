@@ -20,7 +20,7 @@ pip install pyenv-win
 install correct vesion of python
 
 ```
-pyenv install 3.8.6
+pyenv install 3.7.6
 ```
 
 ## Copy repo from github
@@ -30,10 +30,10 @@ create a virtual eviroment by module pipenv or open a PyCharm on this folder and
 and execute comand
 
 ```
-https://github.com/stepan9773/Artify.git
+https://github.com/stepan9773/lab-4.git
 ```
 
-then update a requirements by execute setup.py, then
+then update a requirements by execute requirements.txt, then
 ```
 pipenv update 
 ```
