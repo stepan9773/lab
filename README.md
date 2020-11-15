@@ -1,4 +1,4 @@
-# ArtifyAPI Documentation
+# lab - 2 Documentation
 API for the Artify Project
 
 
