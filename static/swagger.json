@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  title: lab 2 API  by Dupliak Stepan variant №8
+  description: >-
+    Optional multiline or single-line description in
+    [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+
+servers:
+  - url: '/'
+tags:
+  - name: user
+    description: "user details"
+  - name: booking
+    description: "booking details"
+  - name: buy
+    description: "sellers details"
+paths:
+  /user:
+    get:
+      tags:
+      - user
+      summary: Returns current user
+      description: Returns current user.
+      responses:
+        '200':
+          description: a JSON of ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: user not found
+                type: string
+                example: Not found
+
+
+    post:
+      tags:
+      - user
+      summary: login.
+      description: login.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: OK user switched
+
+    put:
+      tags:
+      - user
+      summary: creaet user.
+      description: create user by json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: ctreate sucssesful
+
+    delete:
+      tags:
+      - user
+      summary: delete current user.
+      description: curnt user delete
+      responses:
+        '200':
+          description: ctreate sucssesful
+  /book:
+    get:
+      tags:
+      - booking
+      summary: return current user booking ticket.
+      description: return current user booking ticket
+      responses:
+        '200':
+          description: return current user booking ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+    post:
+      tags:
+      - booking
+      summary: new book ticket registered
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket'
+      responses:
+        '200':
+          description: new book ticket registered
+  /decline_book:
+    post:
+      tags:
+      - booking
+      summary: Decline book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket'
+      responses:
+        '200':
+          description: Decline book
+  /buy:
+    get:
+      tags:
+      - buy
+      summary: return current user bought ticket.
+      description: return current user bought ticket
+      responses:
+        '200':
+          description: return current user bought ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transaction'
+    post:
+      tags:
+      - buy
+      summary: buy ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket'
+      responses:
+        '200':
+          description: buy ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transaction'
+
+
+
+components:
+  schemas:
+    user:
+      properties:
+        name:
+          type: string
+        password:
+          type: string
+        money:
+          type: integer
+
+    ticket:
+      properties:
+        title:
+          type: string
+        price:
+          type: integer
+        place:
+          type: integer
+
+    transaction:
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        place:
+          type: integer
+        price:
+          type: integer

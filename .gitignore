@@ -1,0 +1,5 @@
+__pycache__\
+Pipfile
+Pipfile.lock
+resources\__pycache__\
+settings\__pycache__\

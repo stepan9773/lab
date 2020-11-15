@@ -1,4 +1,6 @@
-# lab4 variant 8 (pipenv, python 3.7.*)
+# ArtifyAPI Documentation
+API for the Artify Project
+
 
 ## Installing python 
 
@@ -18,27 +20,20 @@ pip install pyenv-win
 install correct vesion of python
 
 ```
-pyenv install 3.7.6
+pyenv install 3.8.6
 ```
 
 ## Copy repo from github
 
-you must create folder on your machine and open there `cmd`, `powersell`,`bash`, or simple linux `terminal`
+you must create folder on your machine and open there `cmd`, `powershell`,`bash`, or simple linux `terminal`
 create a virtual eviroment by module pipenv or open a PyCharm on this folder and in venv options select pipenv.
 and execute comand
 
 ```
-git clone https://github.com/stepan9773/lab-4.git
+https://github.com/stepan9773/Artify.git
 ```
 
-## Execute app
-
-so if you lucy owner linux machine, you must duwnloud a WSGI server
-
-```
-pip install gunicorn 
-```
-then update a requirements.txt in terminal
+then update a requirements by execute setup.py, then
 ```
 pipenv update 
 ```
@@ -46,10 +41,10 @@ and pipenv must automaticaly start installing all dependencies for project
 
 and finaly start a project app by command 
 ```
-gunicorn --bind 0.0.0.0:5000 __init__:app
+python manage.py
 ```
 
-## How use 
-On console you will see a HTTP path, execute it on browser and add to him `/api/v1/hello-world-8`.
+## How use
+On console you will see a HTTP path, execute it on browser and add to him `/api/docs`.
 
-You will see text messege `Hello World 8` on browser tab.
+You will see text swagger tab with all rquests tab.
