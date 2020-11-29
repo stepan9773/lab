@@ -1,0 +1,655 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a simple API",
+    "version": "1.0.0",
+    "title": "Lab 5 API Documentantion",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "SmokeResource",
+      "description": "Connection test"
+    },
+    {
+      "name": "StudentsResource",
+      "description": "Students Table Manipulations"
+    },
+    {
+      "name": "StudentResource",
+      "description": "Single Student Table Manipulations"
+    },
+    {
+      "name": "StudentActivity",
+      "description": "Student's attached disciplines and activities(?)"
+    },
+    {
+      "name": "StudentsRatingResource",
+      "description": "Student Rating Manipulations"
+    }
+    ,
+    {
+      "name": "DisciplineResource",
+      "description": "Student's Discipline Manipulations"
+    }
+  ],
+  "paths": {
+    "/Artify/smoke": {
+      "get": {
+        "tags": [
+          "SmokeResource"
+        ],
+        "summary": "Test The Process",
+        "description": "Returns (str): Test message, SQLAlchemy version, And a Hello Word\n",
+        "operationId": "smoke",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfull connection, and String responce"
+          }
+        }
+      }
+
+    },
+    "/Artify/students": {
+      "get": {
+        "tags": [
+          "StudentsResource"
+        ],
+        "summary": "Get List Of Students",
+        "description": "Returns (str): JSON file about student, with such id",
+        "operationId": "getStudentByID",
+        "parameters": [
+        {
+          "in": "body",
+          "name": "sort",
+          "schema": {
+            "$ref": "#/components/schemas/student_id"
+          },
+          "example": "{\"desc\":1}"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successfull connection, and JSON with student responce"
+          },
+
+          "400": {
+            "description": "Bad argument"
+          },
+
+          "404": {
+            "description": "Come back later, server's got down for a bit "
+          }
+        }
+      },"put": {
+        "tags": [
+          "StudentsResource"
+        ],
+        "summary": "Updates student in a students list",
+        "description": "Update student fields in students table: FirstName, LastName and Rating",
+        "operationId": "updateStudentByID",
+        "parameters": [
+          {
+          "in": "body",
+          "name": "studentID",
+            "description": "Select a student to change its values",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "studentId"
+        },{
+          "in": "body",
+          "name": "varToChange",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "studentId"
+        },
+          {
+          "in": "body",
+          "name": "newValue",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "Anton"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Student //student_id// 's variable //varToChange// 's been changed, now its value is: //newValue//"
+          },
+          "400": {
+            "description": "Wrong value for the selected variable"
+          },
+          "401": {
+            "description": "Wrong variable name"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentsResource"
+        ],
+        "summary": "Adds a student to the students list",
+        "description": "Update Students table with a new Student",
+        "operationId": "postStudentToStudents",
+        "parameters": [
+          {
+          "in": "body",
+          "name": "studentID",
+            "description": "Better to leave it empty, system will choose ID automatically",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "1"
+        },{
+          "in": "body",
+          "name": "FirstName",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "Joshua"
+        },
+          {
+          "in": "body",
+          "name": "LastName",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "Markus"
+        },
+          {
+          "in": "body",
+          "name": "Rating",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "99.8"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Student: //LastName + ' ' + FirstName// with ID = //studentID// has been created!"
+          },
+          "400": {
+            "description": "Wrong value for a required type"
+          }
+        }
+      }
+      /*,
+      "put": {
+        "tags": [
+          "/StudentsUpdateResource"
+        ],
+        "summary": "Remove Single Student",
+        "description": "Returns (str): about successful user removement from DB",
+        "operationId": "removeStudentByID",
+        "parameters": [ {
+          "in": "body",
+          "name": "student_id",
+          "schema": {
+            "$ref": "#/components/schemas/student_id"
+          },
+          "example": "{\n    \"desc\":true,\n    \"limit\":2\n}"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Student {student_id} was successfully removed from DB"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentsUpdateResource"
+        ],
+        "summary": "Adds new students to database",
+        "description": "Adds new students to database",
+        "operationId": "addStudentsByJson",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/students_add"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "student_id",
+            "description": "student id",
+            "example": 123,
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/student_id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "description": "Student's rating",
+            "example": 3.65,
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/rating"
+            }
+          },
+          {
+            "in": "query",
+            "name": "first_name",
+            "description": "first name",
+            "example": "Ann",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/first_name"
+            }
+          },
+          {
+            "in": "query",
+            "name": "last_name",
+            "description": "last name",
+            "example": "Mary",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/last_name"
+            }
+          },
+          {
+            "in": "query",
+            "name": "description",
+            "description": "last name",
+            "example": "Not Max",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/description"
+            }
+          }
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful post request are being submitted!"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          }
+        }
+      }*/
+    },
+    "/Artify/student": {
+      "get":  {
+        "tags": [
+          "StudentResource"
+        ],
+        "summary": "Get Student Info",
+        "description": "Returns (str): JSON file about student",
+        "operationId": "getStudentByID",
+        "parameters": [ {
+          "in": "body",
+          "name": "student_id",
+          "schema": {
+            "$ref": "#/components/schemas/student_id"
+          },
+          "example": "1"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Successfull student get request by an given id\nJson File with detailed info"
+          }
+        }
+      },"put": {
+        "tags": [
+          "StudentResource"
+        ],
+        "summary": "Updates student info by studentID",
+        "description": "Updates student info by studentID in studentID table",
+        "operationId": "updateStudentByID",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "studentID",
+            "description": "Select a student to change its values",
+            "schema": {
+              "$ref": "#/components/schemas"
+            },
+            "example": "1"
+          },
+          {
+            "in": "body",
+            "name": "varToChange",
+            "schema": {
+              "$ref": "#/components/schemas"
+            },
+            "example": "group"
+          },
+          {
+            "in": "body",
+            "name": "newValue",
+            "schema": {
+              "$ref": "#/components/schemas"
+            },
+            "example": "CS-214"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student //student_id// 's variable //varToChange// 's been changed, now its value is: //newValue//"
+          },
+          "400": {
+            "description": "Wrong value for the selected variable"
+          },
+          "401": {
+            "description": "Wrong variable name"
+          }
+        }
+      }
+    },
+    "/Artify/studentActivity": {
+      "get": {
+        "tags": [
+          "StudentActivity"
+        ],
+        "summary": "GetStudent Disciplines ID's",
+        "description": "Returns list of disciplines",
+        "operationId": "getStudentDisciplinesIDs",
+        "parameters": [ {
+          "in": "body",
+          "name": "StudentId",
+          "schema": {
+            "$ref": "#/components/schemas/student_rating_request"
+          },
+          "example": "1"
+        } ],
+        "responses": {
+          "200": {
+            "description": "JSON List of student's disciplines"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentActivity"
+        ],
+        "summary": "Add Discipline to the StudentActivity Table",
+        "description": "Adds selected discipline to an student account",
+        "operationId": "addDisciplineToStudentByID",
+        "parameters": [
+          {
+          "in": "body",
+          "name": "DisciplineID",
+            "description": "Better to leave it empty, system will choose ID automatically",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "1"
+        }],
+        "responses": {
+          "200": {
+            "description": "Discipline //DisciplineID// 's been added to StudentActivities of //StudentID//"
+          },
+          "400": {
+            "description": "Wrong or simply unexisted discipline id"
+          }
+        }
+      }
+    },
+    "/Artify/disciplineResource":{
+    "get": {
+        "tags": [
+          "DisciplineResource"
+        ],
+        "summary": "Get Disciplines",
+        "description": "Returns (str): JSON file containing info about all existing disciplines",
+        "operationId": "getDisciplines",
+//        "parameters": [
+//        {
+//          "in": "body",
+//          "name": "DisciplineID",
+//          "schema": {
+//            "$ref": "#/components/schemas/student_id"
+//          },
+//          "example": "1"
+//        }],
+        "responses": {
+          "200": {
+            "description": "JSON result about the disciplines"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DisciplineResource"
+        ],
+        "summary": "Updates specified discipline's values",
+        "description": "Update discipline's fields in Discipline's table for concrete student",
+        "operationId": "updateDisciplineByID",
+        "parameters": [
+          {
+          "in": "body",
+          "name": "DisciplineID",
+            "description": "Select a student to change its values",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+            "example": "1"
+          },
+          {
+          "in": "body",
+          "name": "studentID",
+            "description": "Select a student to change its values",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "1"
+        },{
+          "in": "body",
+          "name": "DisciplineName",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "Calculus"
+        },
+          {
+          "in": "body",
+          "name": "Credits",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "4"
+        },
+          {
+          "in": "body",
+          "name": "Mark",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "88"
+        },
+          {
+          "in": "body",
+          "name": "Passed",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "true"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Student //student_id// 's discipline variables 's been changed"
+          },
+          "400": {
+            "description": "Wrong value for some parameters"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DisciplineResource"
+        ],
+        "summary": "Adds a Discipline to the Discipline's list",
+        "description": "Update Discipline table with a new Discipline",
+        "operationId": "postDisciplineToDisciplines",
+        "parameters": [
+          {
+          "in": "body",
+          "name": "DisciplineID",
+            "description": "Better to leave it empty, system will choose ID automatically",
+          "schema": {
+            "$ref": "#/components/schemas"
+          },
+          "example": "1"
+        } ],
+        "responses": {
+          "200": {
+            "description": "Discipline's been successfully added to the list"
+          },
+          "400": {
+            "description": "Impossible! Possibly bad connection to the DB"
+          }
+        }
+      }
+
+    }
+  }
+  ,
+  "components": {
+    "schemas": {
+      "student_rating_update_request": {
+        "type": "object",
+        "properties": {
+          "student_id": {
+            "type": "integer",
+            "format": "integer",
+            "example": 125,
+            "required": true
+          },
+          "rating":{
+            "type": "real",
+            "format": "8-bit float",
+            "example": 3.65,
+            "required": true
+          }
+
+        }
+      },
+      "student_rating_request": {
+        "type": "object",
+        "required":[
+          "student_id"
+          , "rating"
+          , "first_name"
+          , "last_name"
+        ],
+        "properties": {
+          "desc": {
+            "type": "boolean",
+            "format": "boolean",
+            "example": true,
+            "required": true,
+            "description": "true - sort by desc, false - asc"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "integer",
+            "example": 2,
+            "required": false,
+            "description": "max columns, to be returned, none - no limit"
+          }
+
+        }
+        },
+      "student_id": {
+            "type": "integer",
+            "format": "integer",
+            "example": 125,
+            "required": true
+          },
+          "rating": {
+            "type": "real",
+            "format": "8-bit float",
+            "example": 3.65,
+            "required": true
+          },
+          "first_name": {
+            "type": "string",
+            "format": "varchar(50)",
+            "example": "John",
+            "required": true
+          },
+          "last_name": {
+            "type": "string",
+            "format": "varchar(50)",
+            "example": "Wicked",
+            "required": true
+          },
+          "description": {
+            "type": "string",
+            "format": "varchar(500)",
+            "required": false
+          },
+      "students_add": {
+        "type": "object",
+        "required":[
+          "n",
+          "students"
+        ],
+        "properties": {
+          "n": {
+            "type": "integer",
+            "format": "integer",
+            "description": "count of students in request to be added",
+            "example": 1
+          },
+          "students": {
+            "type": "array",
+            "items":{
+              "$ref": "#/components/schemas/Student"
+            }
+          }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "required":[
+          "student_id"
+          , "rating"
+          , "first_name"
+          , "last_name"
+        ],
+        "properties": {
+          "student_id": {
+            "type": "integer",
+            "format": "integer",
+            "example": 125,
+            "required": true
+          },
+          "rating": {
+            "type": "real",
+            "format": "8-bit float",
+            "example": 3.65,
+            "required": true
+          },
+          "first_name": {
+            "type": "string",
+            "format": "varchar(50)",
+            "example": "John",
+            "required": true
+          },
+          "last_name": {
+            "type": "string",
+            "format": "varchar(50)",
+            "example": "Wicked",
+            "required": true
+          },
+          "description": {
+            "type": "string",
+            "format": "varchar(500)",
+            "required": false
+          }
+        }
+      }
+    }
+  }
+}
