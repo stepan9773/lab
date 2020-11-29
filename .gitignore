@@ -1,5 +1,7 @@
-__pycache__\
+__pycache__/
 Pipfile
 Pipfile.lock
-resources\__pycache__\
-settings\__pycache__\
+resources/__pycache__/
+settings/__pycache__/
+.idea/
+env/

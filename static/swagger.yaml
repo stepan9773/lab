@@ -1,0 +1,381 @@
+openapi: 3.0.0
+info:
+  title: Lab 2 API made with love by Roman Kovalchuk
+  description: >-
+    variant №12
+  version: 0.0.1
+
+servers:
+  - url: '/'
+tags:
+  - name: Rating
+    description: "Rating details"
+  - name: Student
+    description: "Student's details"
+  - name: Marks
+    description: "Marks details"
+  - name: Disciplines
+    description: "Disciplines details"
+paths:
+  /rating:
+    get:
+      tags:
+        - Rating
+      summary: Returns current rating
+      description: Returns current rating.
+      responses:
+        '200':
+          description: Rating Sorted by DESC
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rating'
+        '405':
+          description: No users exist
+          content:
+            text/plain:
+              schema:
+                title: No students exist / Bad DB Connection
+                type: string
+                example: 405 Internal Server Error
+#    post:
+#      tags:
+#        - user
+#      summary: login.
+#      description: login.
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              properties:
+#                username:
+#                  type: string
+#                password:
+#                  type: string
+#      responses:
+#        '200':
+#          description: OK user switched
+#          content:
+#            application/json:
+#              schema:
+#                properties:
+#                  user_id:
+#                    type: integer
+#        '404':
+#          description: Not found response
+#          content:
+#            text/plain:
+#              schema:
+#                title: user not found
+#                type: string
+#
+#
+#    put:
+#      tags:
+#        - user
+#      summary: create user.
+#      description: create user by json
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/user'
+#      responses:
+#        '200':
+#          description: ctreate sucssesful
+#        '404':
+#          description: This user already exist
+#          content:
+#            text/plain:
+#              schema:
+#                title: This user already exist
+#                type: string
+#                example: This user already exist
+  /student/{id}:
+    get:
+      tags:
+        - Student
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      responses:
+        '200':
+          description: a JSON of user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/student'
+        '405':
+          description: No user found
+          content:
+            text/plain:
+              schema:
+                title: No such user found
+                type: string
+                example: No such user exists in our DB, you might wanna recheck an id you gave us
+    post:
+      tags:
+      - Student
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: New Student.
+      description: Creation page.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/student'
+      responses:
+        '200':
+          description: Nice, we've created a new Student
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+        '405':
+          description: Error. You might wanna recheck the fields you gave us, some error till creation uccured
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Bad! Some error occured. You might wanna recheck the fields you gave us, some error till creation happen
+    put:
+      tags:
+      - Student
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: Update student.
+      description: update user by json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/student'
+      responses:
+        '200':
+          description: Update sucssesful
+        '405':
+          description: Internal Server error
+          content:
+            text/plain:
+              schema:
+                title: This user already exist
+                type: string
+                example: Internal Server error, DB error
+
+  /marks/{id}:
+    get:
+      tags:
+      - Marks
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: return current student's marks.
+      description: return current student's marks
+      responses:
+        '200':
+          description: return student's marks"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - type: string
+                      example: Calculus
+                    - type: integer
+                      example: 4
+                    - $ref: '#/components/schemas/marks'
+        '405':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: Student not found
+                type: string
+                example: Student does not exist
+
+
+    post:
+      tags:
+      - Marks
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: Assign a new Discipline to the student
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/discipline'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Simillar discipline already has been added
+        '405':
+          description: Internal Server Error
+  /disciplines/{id}:
+    get:
+      tags:
+        - Disciplines
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      responses:
+        '200':
+          description: a JSON of Discipline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/discipline'
+        '405':
+          description: No discipline found
+          content:
+            text/plain:
+              schema:
+                title: No such discipline found
+                type: string
+                example: No such discipline exists in our DB, you might wanna recheck an id you gave us
+    post:
+      tags:
+        - Disciplines
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: New Discipline.
+      description: Creation page.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/discipline'
+      responses:
+        '200':
+          description: Nice, we've created a new Discipline
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+        '405':
+          description: Error. You might wanna recheck the fields you gave us, some error till creation uccured
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Bad! Some error occured. You might wanna recheck the fields you gave us, some error till creation happen
+    put:
+      tags:
+        - Disciplines
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID
+      summary: update discipline.
+      description: update discipline by json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/discipline'
+      responses:
+        '200':
+          description: Update sucssesful
+        '405':
+          description: Internal Server error
+          content:
+            text/plain:
+              schema:
+                title: DB error
+                type: string
+                example: Internal Server error, DB error
+
+
+components:
+  schemas:
+    rating:
+      properties:
+        ID:
+          type: integer
+        List:
+          type: array
+          items:
+            type: object
+            properties:
+              StudentID:
+                type: varchar
+              MarksID:
+                type: varchar
+
+    student:
+      properties:
+        ID:
+          type: integer
+        Group:
+          type: varchar
+        FirstName:
+          type: varchar
+        LastName:
+          type: varchar
+    marks:
+      properties:
+        ID:
+          type: integer
+        List:
+          type: array
+          items:
+            type: object
+            properties:
+              DisciplineID:
+                type: integer
+              Mark:
+                type: real
+              Passed:
+                type: boolean
+    discipline:
+      properties:
+        DisciplineName:
+          type: varchar
+        Credits:
+          type: integer
+
+
+
+
