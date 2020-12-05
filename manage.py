@@ -15,10 +15,5 @@ def run(api):
 
 
 if __name__ == "__main__":
-    api = app.create_app()  # create application
-    #run(api)  # start application
-
-    migrate = Migrate(api, app.db)
-    maneger = Manager(api)
-    maneger.add_command('db', MigrateCommand)
-    maneger.run()
+    api = app.create_app(DevConfig)  # create application
+    run(api)  # start application
