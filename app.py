@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_restful import Api
 
-from flask_jwt import JWT, jwt_required, current_identity
 from resources.SmokeResource import SmokeResources
 from flask_login import LoginManager, login_required, current_user, login_user, UserMixin
 
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_swagger_ui import get_swaggerui_blueprint
 
 
 db = SQLAlchemy()
@@ -68,7 +69,16 @@ def create_app(config=None):
     from auth.auth import auth as auth_blueprint
     import_bluprint_resource()
     app.register_blueprint(auth_blueprint)
-
+    SWAGGER_URL = f'/swagger'
+    API_URL = '/static/swagger.yaml'
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        SWAGGER_URL
+        , API_URL
+        , config={
+            'app_name': 'Lab7 API Documentation'
+        }
+    )
+    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
     return app
 
@@ -105,7 +115,7 @@ from resources.booking_by_id_resource import BookingByIDRasource
 from resources.declime_book_resource import DeclimeBooking
 from resources.buy_by_id_resource import BuyByIDRasource
 from resources.buy_resource import BuyRasource
-
+from resources.user_resource import UserRasource
 def register_smoke_rotes(api):
     """
     Connect to API resource Smoke
@@ -115,12 +125,13 @@ def register_smoke_rotes(api):
          None
     """
     api.add_resource(SmokeResources, "/smoke")
-    api.add_resource(UserByIDRasource,"/user/<int:id>")
+    api.add_resource(UserByIDRasource, "/user/<int:id>")
     api.add_resource(BookingRasource, "/book")
     api.add_resource(BookingByIDRasource, "/book/<int:id>")
-    api.add_resource(DeclimeBooking,'/decline_book')
+    api.add_resource(DeclimeBooking, '/decline_book')
     api.add_resource(BuyRasource, '/buy')
     api.add_resource(BuyByIDRasource, '/buy/<int:id>')
+    api.add_resource(UserRasource, '/user')
 
 
 def import_bluprint_resource():
