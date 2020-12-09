@@ -34,7 +34,7 @@ class BuyRasource(Resource):
         price = data['price']
 
         if Ticket.query.filter_by(seat=place, date=date,price=price,title=title).first() is not None:
-            return "this ticked are sold"
+            return "this ticked are sold", 404
 
         ticket = Ticket(seat=place, date=date, price=price, title=title)
         db.session.add(ticket)

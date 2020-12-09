@@ -4,7 +4,7 @@ from flask import flash
 from flask import request
 from flask_login import login_user
 from werkzeug.security import check_password_hash
-
+from http import HTTPStatus
 from auth.auth import auth
 from app import User
 
@@ -16,9 +16,8 @@ def login():
     name = data["username"]
 
     user = User.query.filter_by(username=name).first()
-    if not user or not (user.password == password):
-        flash("wrong password or email ")
-        return "bed"
+    if not user and not check_password_hash(user.password, password):
+        return "you write bad password or user name",HTTPStatus.BAD_REQUEST
 
     login_user(user)
 

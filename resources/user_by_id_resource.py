@@ -12,7 +12,7 @@ class UserByIDRasource(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()
         if not user:
-            return f"no user with id {id} "
+            return f"no user with id {id} ", 404
         return {
             "id": id,
             "username": user.username,
@@ -23,7 +23,7 @@ class UserByIDRasource(Resource):
 
         user  = User.query.filter_by(id=id).first()
         if not user:
-            return f"no user with id {id} "
+            return f"no user with id {id} ", 404
         name = user.username
         db.session.delete(user)
         db.session.commit()

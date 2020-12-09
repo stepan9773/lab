@@ -13,20 +13,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 db = SQLAlchemy()
 migrate = Migrate()
 
-"""
-def auth(username, password):
-    user = User.qoery.filter_by(username=username).first()
-    if not user and not user.password == password:
-        user = User(username= 'user',password='',id = 1)
-    return user
-
-def ident(user):
-    user_id = user.id
-    if user.username == 'user':
-        return 1
-    return User.query.filter_by(id=user_id).first().id
-
-"""
 
 
 
@@ -103,8 +89,8 @@ class Transaction(db.Model):
 
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.VARCHAR(length=50 ), unique=True)
-    password = db.Column(db.VARCHAR(length=50))
+    username = db.Column(db.VARCHAR(length=50), unique=True)
+    password = db.Column(db.VARCHAR(length=256))
 
 
 

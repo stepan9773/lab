@@ -12,6 +12,8 @@ class BookingRasource(Resource):
     def get(self):
         transactions = Transaction.query.filter_by(user_id=current_user.id, booked=True)
         response_dict = {}
+        if transactions is None:
+            return "booking not exist", 404
         for transaction in transactions:
             response_dict[transaction.id] = {
                 "ticket_id": transaction.ticket_id,
@@ -31,7 +33,7 @@ class BookingRasource(Resource):
         price = data['price']
 
         if Ticket.query.filter_by(seat=place, date=date, price=price, title=title).first() is not None:
-            return "this ticked are sold"
+            return "this ticked are sold", 404
 
         ticket = Ticket(seat=place, date=date, price=price, title=title)
         db.session.add(ticket)
