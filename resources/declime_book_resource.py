@@ -11,8 +11,8 @@ class DeclimeBooking(Resource):
 
     def post(self):
         data = request.get_json()
-        ticket_id = data["transaction_id"]
-        transaction = Transaction.query.filter_by(id=ticket_id, booked=True,user_id=current_user.id).first()
+        ticket_id = data["ticket_id"]
+        transaction = Transaction.query.filter_by(id=ticket_id, booked=True, user_id=current_user.id).first()
         if transaction is None:
             return "booking not exist", 404
         ticket = Ticket.query.filter_by(id=transaction.ticket_id).first()
@@ -22,6 +22,4 @@ class DeclimeBooking(Resource):
         db.session.delete(ticket)
         db.session.commit()
 
-
         return "Declime dook ", 200
-

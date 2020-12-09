@@ -1,6 +1,7 @@
 import sqlalchemy as sqlalchemy
-from flask_restful import Resource;
 from flask_login import current_user
+from flask_restful import Resource;
+
 import app
 
 
@@ -8,6 +9,7 @@ class SmokeResources(Resource):
     """
     GET endpoint handler to test the process
     """
+
     def get(self):
         """
         Returns (str): Test message, SQLAlchemy version, and Hello :)

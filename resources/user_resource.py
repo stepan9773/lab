@@ -1,10 +1,6 @@
-from http import HTTPStatus
-
-from flask import request
 from flask_restful import Resource
-from flask_login import login_user
+
 from app import User
-from app import db
 
 
 class UserRasource(Resource):
@@ -19,4 +15,3 @@ class UserRasource(Resource):
                                       "password": user.password}
 
         return response_dict
-
