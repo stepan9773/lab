@@ -1,13 +1,13 @@
 from http import HTTPStatus
 
-from flask import request
+from flask import request, jsonify
 from flask_login import login_user
 from werkzeug.security import check_password_hash
 
 from app import User
 from auth.auth import auth
 
-
+"""
 @auth.route('/user', methods=['POST'])
 def login():
     data = request.get_json()
@@ -23,3 +23,5 @@ def login():
     return {
         "user_id": user.id
     }
+"""
+

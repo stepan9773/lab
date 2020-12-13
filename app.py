@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_restful import Api
 
-from resources.SmokeResource import SmokeResources
-from flask_login import LoginManager, login_required, current_user, login_user, UserMixin
+from flask_login import  UserMixin
 
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+from flask import request,jsonify
 
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -27,10 +31,10 @@ def create_app(config=None):
     """
     app = Flask(__name__)
     api = Api(app)
-    login_manager = LoginManager()
-    login_manager.init_app(app)
 
 
+
+    jwt = JWTManager(app)
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'postgresql://postgres:1234@localhost:5432/booking_db'
     app.config['SECRET_KEY'] = 'stepan'
@@ -39,22 +43,13 @@ def create_app(config=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    @login_manager.user_loader
-    def user_loader(user_id):
-        return User.query.get(int(user_id))
-    #jwt = JWT(app,auth,ident)
-
     register_smoke_rotes(api)
 
-    @app.before_request
-    def before_request_auth():
-        if not current_user.is_authenticated:
-            user = User.query.filter_by(username="user").first()
-            login_user(user)
 
-    from auth.auth import auth as auth_blueprint
+
+
     import_bluprint_resource()
-    app.register_blueprint(auth_blueprint)
+
     SWAGGER_URL = f'/swagger'
     API_URL = '/static/swagger.yaml'
     swaggerui_blueprint = get_swaggerui_blueprint(
@@ -64,11 +59,10 @@ def create_app(config=None):
             'app_name': 'Lab7 API Documentation'
         }
     )
+
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
     return app
-
-
 
 
 class Ticket(db.Model):
@@ -92,7 +86,10 @@ class User(UserMixin,db.Model):
     username = db.Column(db.VARCHAR(length=50), unique=True)
     password = db.Column(db.VARCHAR(length=256))
 
-
+class Rights(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.INTEGER, db.ForeignKey("user.id"))
+    admin = db.Column(db.Boolean)
 
 
 from resources.user_by_id_resource import UserByIDRasource
@@ -102,6 +99,10 @@ from resources.declime_book_resource import DeclimeBooking
 from resources.buy_by_id_resource import BuyByIDRasource
 from resources.buy_resource import BuyRasource
 from resources.user_resource import UserRasource
+from resources.login_resource import LoginResource
+from resources.signup_resource import SignupResource
+from resources.administrator_resource import AdminResource
+from resources.SmokeResource import SmokeResources
 def register_smoke_rotes(api):
     """
     Connect to API resource Smoke
@@ -118,8 +119,10 @@ def register_smoke_rotes(api):
     api.add_resource(BuyRasource, '/buy')
     api.add_resource(BuyByIDRasource, '/buy/<int:id>')
     api.add_resource(UserRasource, '/user')
-
-
+    api.add_resource(LoginResource, '/login')
+    api.add_resource(SignupResource, '/signup')
+    api.add_resource(AdminResource, '/admin')
 def import_bluprint_resource():
-    from resources.auth.login import login
-    from resources.auth.signup import signup
+
+
+    pass
