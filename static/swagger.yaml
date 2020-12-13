@@ -1,381 +1,363 @@
 openapi: 3.0.0
 info:
-  title: Lab 2 API made with love by Roman Kovalchuk
+  title: lab 2 API  by Dupliak Stepan variant №8
   description: >-
-    variant №12
-  version: 0.0.1
+    Optional multiline or single-line description in
+    [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
 
 servers:
   - url: '/'
 tags:
-  - name: Rating
-    description: "Rating details"
-  - name: Student
-    description: "Student's details"
-  - name: Marks
-    description: "Marks details"
-  - name: Disciplines
-    description: "Disciplines details"
+  - name: user
+    description: "user details"
+  - name: booking
+    description: "booking details"
+  - name: buy 
+    description: "sellers details"
 paths:
-  /rating:
+  /user:
     get:
-      tags:
-        - Rating
-      summary: Returns current rating
-      description: Returns current rating.
+      tags: 
+      - user
+      summary: Returns all user
+      description: Returns current user.
       responses:
         '200':
-          description: Rating Sorted by DESC
+          description: a JSON of ticket
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/rating'
-        '405':
+                $ref: '#/components/schemas/user'
+        '404':
           description: No users exist
           content:
             text/plain:
               schema:
-                title: No students exist / Bad DB Connection
+                title: No users exist
                 type: string
-                example: 405 Internal Server Error
-#    post:
-#      tags:
-#        - user
-#      summary: login.
-#      description: login.
-#      requestBody:
-#        content:
-#          application/json:
-#            schema:
-#              properties:
-#                username:
-#                  type: string
-#                password:
-#                  type: string
-#      responses:
-#        '200':
-#          description: OK user switched
-#          content:
-#            application/json:
-#              schema:
-#                properties:
-#                  user_id:
-#                    type: integer
-#        '404':
-#          description: Not found response
-#          content:
-#            text/plain:
-#              schema:
-#                title: user not found
-#                type: string
-#
-#
-#    put:
-#      tags:
-#        - user
-#      summary: create user.
-#      description: create user by json
-#      requestBody:
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/user'
-#      responses:
-#        '200':
-#          description: ctreate sucssesful
-#        '404':
-#          description: This user already exist
-#          content:
-#            text/plain:
-#              schema:
-#                title: This user already exist
-#                type: string
-#                example: This user already exist
-  /student/{id}:
+                example: No users exist
+      
+                
+ 
+    post:
+      tags: 
+      - user
+      summary: login.
+      description: login.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+      responses:
+        '200':
+          description: OK user switched
+          content:
+            application/json:
+              schema:
+                properties:
+                  user_id:
+                    type: integer
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: user not found
+                type: string
+            
+          
+    put:   
+      tags: 
+      - user
+      summary: create user.
+      description: create user by json 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: ctreate sucssesful
+        '404':
+          description: This user already exist
+          content:
+            text/plain:
+              schema:
+                title: This user already exist
+                type: string
+                example: This user already exist
+         
+    
+          
+          
+  /user/{user_id}:
     get:
-      tags:
-        - Student
+      tags: 
+      - user
       parameters:
         - in: path
-          name: id
+          name: user_id
           schema:
             type: integer
           required: true
-          description: ID
+          description: Numeric ID of the user to get
       responses:
         '200':
           description: a JSON of user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/student'
-        '405':
-          description: No user found
-          content:
-            text/plain:
-              schema:
-                title: No such user found
-                type: string
-                example: No such user exists in our DB, you might wanna recheck an id you gave us
-    post:
-      tags:
-      - Student
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID
-      summary: New Student.
-      description: Creation page.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/student'
-      responses:
-        '200':
-          description: Nice, we've created a new Student
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    type: integer
-        '405':
-          description: Error. You might wanna recheck the fields you gave us, some error till creation uccured
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: Bad! Some error occured. You might wanna recheck the fields you gave us, some error till creation happen
-    put:
-      tags:
-      - Student
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID
-      summary: Update student.
-      description: update user by json
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/student'
-      responses:
-        '200':
-          description: Update sucssesful
-        '405':
-          description: Internal Server error
-          content:
-            text/plain:
-              schema:
-                title: This user already exist
-                type: string
-                example: Internal Server error, DB error
-
-  /marks/{id}:
-    get:
-      tags:
-      - Marks
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID
-      summary: return current student's marks.
-      description: return current student's marks
-      responses:
-        '200':
-          description: return student's marks"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  oneOf:
-                    - type: string
-                      example: Calculus
-                    - type: integer
-                      example: 4
-                    - $ref: '#/components/schemas/marks'
-        '405':
+                $ref: '#/components/schemas/user'
+        '404':
           description: Not found response
           content:
             text/plain:
               schema:
-                title: Student not found
+                title: user not found
                 type: string
-                example: Student does not exist
-
-
-    post:
-      tags:
-      - Marks
+                example: Not found
+    delete:
+      tags: 
+      - user
       parameters:
         - in: path
-          name: id
+          name: user_id
           schema:
             type: integer
           required: true
-          description: ID
-      summary: Assign a new Discipline to the student
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: '#/components/schemas/discipline'
+          description: Numeric ID of the user to delete
       responses:
         '200':
-          description: OK
-        '400':
-          description: Simillar discipline already has been added
-        '405':
-          description: Internal Server Error
-  /disciplines/{id}:
+          description: delete sucssesful
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: user not found
+                type: string
+                example: incorect id or user not exist
+  /book:
     get:
-      tags:
-        - Disciplines
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID
+      tags: 
+      - booking
+      summary: return current user booking ticket.
+      description: return current user booking ticket
       responses:
         '200':
-          description: a JSON of Discipline
+          description: return booking transaction with type "book"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/discipline'
-        '405':
-          description: No discipline found
+                example: 
+                  transaction_id: 1
+                  user_id: 2
+                  ticket_id: 32
+                  type: book
+        '404':
+          description: Not found response
           content:
             text/plain:
               schema:
-                title: No such discipline found
+                title: Booking not found
                 type: string
-                example: No such discipline exists in our DB, you might wanna recheck an id you gave us
+                example: booking not exist        
+         
+        
     post:
-      tags:
-        - Disciplines
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ID
-      summary: New Discipline.
-      description: Creation page.
+      tags: 
+      - booking
+      summary: new book ticket registered
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/discipline'
+               $ref: '#/components/schemas/ticket'
       responses:
         '200':
-          description: Nice, we've created a new Discipline
+          description: return booking transaction with type "book"
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-        '405':
-          description: Error. You might wanna recheck the fields you gave us, some error till creation uccured
+                example: 
+                  transaction_id: 1
+                  user_id: 2
+                  ticket_id: 32
+                  type: book
+        '404':
+          description: Not found ticket
           content:
             text/plain:
               schema:
+                title: Booking not found
                 type: string
-                example: Bad! Some error occured. You might wanna recheck the fields you gave us, some error till creation happen
-    put:
-      tags:
-        - Disciplines
+                example: this ticket already sold 
+  /book/{ticket_id}:
+    get:
+      tags: 
+      - booking
       parameters:
         - in: path
-          name: id
+          name: ticket_id
           schema:
             type: integer
           required: true
-          description: ID
-      summary: update discipline.
-      description: update discipline by json
+          description: Numeric ID of the user to delete
+      description: return current user booking ticket
+      responses:
+        '200':
+          description: return booking transaction with type "book" by "ticket_id"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: Booking not found
+                type: string
+                example: booking not exist  
+  /decline_book: 
+    post:
+      tags: 
+      - booking
+      summary: Decline book 
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/discipline'
+              properties:
+                ticket_id:
+                  type: integer
       responses:
         '200':
-          description: Update sucssesful
-        '405':
-          description: Internal Server error
+          description: Decline book 
+        '404':
+          description: Not found response
           content:
             text/plain:
               schema:
-                title: DB error
+                title: Booking not found
                 type: string
-                example: Internal Server error, DB error
-
-
+                example: booking not exist    
+  /buy:
+    get:
+      tags: 
+      - buy
+      summary: return current user bought ticket.
+      description: return current user bought ticket
+      responses:
+        '200':
+          description: return current user bought ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transaction'
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: tickets not found
+                type: string
+                example: tickets not found  
+    post:
+      tags: 
+      - buy
+      summary: buy ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket'
+      responses:
+        '200':
+          description: buy ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transaction'
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: tickets already sold
+                type: string
+                example: tickets already sold 
+                
+  /buy/{ticket_id}:
+    get:
+      tags: 
+      - buy
+      parameters:
+        - in: path
+          name: ticket_id
+          schema:
+            type: integer
+          required: true
+          description: ticket sold by id
+      description: return current user buy ticket
+      responses:
+        '200':
+          description: return current user bought ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket'
+        '404':
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: tickets not found
+                type: string
+                example: tickets not found    
+    
+            
 components:
   schemas:
-    rating:
+    user:
       properties:
-        ID:
+        user_id:
           type: integer
-        List:
-          type: array
-          items:
-            type: object
-            properties:
-              StudentID:
-                type: varchar
-              MarksID:
-                type: varchar
-
-    student:
+        username:
+          type: string
+        password:
+          type: string
+ 
+    ticket:
       properties:
-        ID:
+        ticket_id:
           type: integer
-        Group:
-          type: varchar
-        FirstName:
-          type: varchar
-        LastName:
-          type: varchar
-    marks:
+        price:
+          type: integer
+        place:
+          type: integer
+        title:
+          type: string
+        date:
+          type: integer
+ 
+    transaction:
       properties:
-        ID:
+        transaction_id:
           type: integer
-        List:
-          type: array
-          items:
-            type: object
-            properties:
-              DisciplineID:
-                type: integer
-              Mark:
-                type: real
-              Passed:
-                type: boolean
-    discipline:
-      properties:
-        DisciplineName:
-          type: varchar
-        Credits:
+        user_id:
           type: integer
-
-
-
-
+        ticket_id:
+          type: integer
+        type:
+          type: string
+          
+    
+        

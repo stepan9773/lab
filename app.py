@@ -1,25 +1,17 @@
-from flask import Flask, send_from_directory
+from flask import Flask
 from flask_restful import Api
-from flask_cors import CORS
 
-from resources.SendFromDirectorySwagger import SendFromDirectorySwagger
-from resources.StudentsUpdateResource import StudentUpdateResources
-from resources.StudentsRatingResource import StudentRatingResources
 from resources.SmokeResource import SmokeResources
-from settings.settings import Config
+from flask_login import LoginManager, login_required, current_user, login_user, UserMixin
 
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
-
-
-
-APP_NAME = "Artify"
-APP_PREFIX = "/Artify"
-
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 
@@ -33,43 +25,83 @@ def create_app(config=None):
     Returns:
          app (Flask): application
     """
-    app = Flask(APP_NAME)
-    api = Api(app, prefix=APP_PREFIX)
+    app = Flask(__name__)
+    api = Api(app)
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
 
     app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'sqlite:///D:/Documents/AppliedProgramming/Lab5/ArtifyAPI/Database/BookingDB.db'
-
-    db.init_app(app)
-
-    # database = db.connect('Database/Institution.db')
-    # cursor = database.cursor();
-    # cursor.execute('''
-    #     Select *
-    #     From Students;
-    # ''')
-    # print(cursor.fetchone())
+        'postgresql://postgres:1234@localhost:5432/booking_db'
+    app.config['SECRET_KEY'] = 'stepan'
     app.config.from_object(config)
-    app.logger_name = APP_NAME
+    app.logger_name = __name__
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    @login_manager.user_loader
+    def user_loader(user_id):
+        return User.query.get(int(user_id))
+    #jwt = JWT(app,auth,ident)
 
     register_smoke_rotes(api)
-    register_student_update_rotes(api)
-    register_student_rating_rotes(api)
-    register_send_static_route(api)
-    SWAGGER_URL = f'{APP_PREFIX}/swagger'
-    API_URL = '/static/swagger.json'
+
+    @app.before_request
+    def before_request_auth():
+        if not current_user.is_authenticated:
+            user = User.query.filter_by(username="user").first()
+            login_user(user)
+
+    from auth.auth import auth as auth_blueprint
+    import_bluprint_resource()
+    app.register_blueprint(auth_blueprint)
+    SWAGGER_URL = f'/swagger'
+    API_URL = '/static/swagger.yaml'
     swaggerui_blueprint = get_swaggerui_blueprint(
         SWAGGER_URL
         , API_URL
-        , config = {
-            'app_name' : 'Lab5 API Documentation'
+        , config={
+            'app_name': 'Lab7 API Documentation'
         }
     )
-    app.register_blueprint(swaggerui_blueprint, url_prefix = SWAGGER_URL)
-    #app.register_blueprint(request_api.get_blueprint())
+    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
     return app
 
 
+
+
+class Ticket(db.Model):
+    id = db.Column(db.INTEGER, primary_key=True)
+    title = db.Column(db.VARCHAR(length=50))
+    date = db.Column(db.String(50))
+    price = db.Column(db.REAL)
+    seat = db.Column(db.INTEGER)
+
+
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.INTEGER, db.ForeignKey("user.id"))
+    ticket_id = db.Column(db.INTEGER, db.ForeignKey("ticket.id"))
+    booked = db.Column(db.BOOLEAN)
+
+
+
+class User(UserMixin,db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.VARCHAR(length=50), unique=True)
+    password = db.Column(db.VARCHAR(length=256))
+
+
+
+
+from resources.user_by_id_resource import UserByIDRasource
+from resources.booking_resource import BookingRasource
+from resources.booking_by_id_resource import BookingByIDRasource
+from resources.declime_book_resource import DeclimeBooking
+from resources.buy_by_id_resource import BuyByIDRasource
+from resources.buy_resource import BuyRasource
+from resources.user_resource import UserRasource
 def register_smoke_rotes(api):
     """
     Connect to API resource Smoke
@@ -79,79 +111,15 @@ def register_smoke_rotes(api):
          None
     """
     api.add_resource(SmokeResources, "/smoke")
+    api.add_resource(UserByIDRasource, "/user/<int:id>")
+    api.add_resource(BookingRasource, "/book")
+    api.add_resource(BookingByIDRasource, "/book/<int:id>")
+    api.add_resource(DeclimeBooking, '/decline_book')
+    api.add_resource(BuyRasource, '/buy')
+    api.add_resource(BuyByIDRasource, '/buy/<int:id>')
+    api.add_resource(UserRasource, '/user')
 
 
-def register_student_update_rotes(api):
-    """
-    Connect to API resource StudentUpdate
-    args:
-        api: API which connect the resource StudentUpdate
-    Returns:
-         None
-    """
-    api.add_resource(StudentUpdateResources, "/student_update")
-
-
-def register_student_rating_rotes(api):
-    """
-    Connect to API resource StudentRating
-    args:
-        api: API which connect the resource StudentRating
-    Returns:
-         None
-    """
-    api.add_resource(StudentRatingResources, "/student_rating")
-
-
-def register_send_static_route(api):
-    api.add_resource(SendFromDirectorySwagger, "/static/<path:path>")
-
-class Ticket(db.Model):
-
-    ticket_id = db.Column(db.INTEGER, primary_key=True)
-    title = db.Column(db.VARCHAR(length=50))
-    date = db.Column(db.DATETIME)
-
-    def __init__(self, ticket_id, title, date):
-        self.ticket_id = ticket_id
-        self.title = title
-        self.date = date
-
-class Tickets(db.Model):
-    id = db.Column(db.INTEGER, primary_key=True)
-    ticket_id = db.Column(db.INTEGER)
-    price = db.Column(db.REAL)
-    seat = db.Column(db.INTEGER)
-
-    def __init__(self, id, ticket_id, price, seat):
-        self.id = id
-        self.ticket_id = ticket_id
-        self.price = price
-        self.seat = seat
-
-
-class Transaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.INTEGER)
-    ticket_id = db.Column(db.INTEGER)
-    booked = db.Column(db.BOOLEAN)
-
-    def __init__(self, id, user_id, ticket_id, booked):
-        self.id = id
-        self.user_id = user_id
-        self.ticket_id = ticket_id
-        self.booked = booked
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.VARCHAR(length=50))
-    password = db.Column(db.VARCHAR(length=50))
-
-    def __init__(self, id, username, password, booked):
-        self.id = id
-        self.username = username
-        self.password = password
-
-
-
-
+def import_bluprint_resource():
+    from resources.auth.login import login
+    from resources.auth.signup import signup
