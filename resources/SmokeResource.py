@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity,
 )
-from flask import jsonify
+from http import HTTPStatus
 from app import User
 class SmokeResources(Resource):
     """
@@ -19,10 +19,4 @@ class SmokeResources(Resource):
         """
         Returns (str): Test message, SQLAlchemy version, and Hello :)
         """
-        current_user = get_jwt_identity()
-        curent = User.query.filter_by(username = current_user).first()
-        return \
-            f"""USER {curent.username}  {curent.password}
-            Hello, Student! SQLAlchemy works just fine, and it's version is: {sqlalchemy.__version__}
-            Database connection is OK, and it's array is: {app.db.ARRAY}
-            """, 200
+        return 200

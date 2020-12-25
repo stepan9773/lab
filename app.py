@@ -38,13 +38,14 @@ def create_app(config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'postgresql://postgres:1234@localhost:5432/booking_db'
     app.config['SECRET_KEY'] = 'stepan'
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     app.config.from_object(config)
     app.logger_name = __name__
     db.init_app(app)
     migrate.init_app(app, db)
 
     register_smoke_rotes(api)
-
+    cl = app.test_client()
 
 
 
@@ -62,7 +63,7 @@ def create_app(config=None):
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-    return app
+    return app , cl
 
 
 class Ticket(db.Model):

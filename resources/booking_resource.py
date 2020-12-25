@@ -13,20 +13,18 @@ from flask_jwt_extended import (
 class BookingRasource(Resource):
     @jwt_required
     def get(self):
-        current_user_name = get_jwt_identity()
-        current_user = User.query.filter_by(username=current_user_name).first()
+        transactions = Transaction.query.filter_by(user_id=User.query.filter_by(username=get_jwt_identity()).first().id, booked=True)
 
-        transactions = Transaction.query.filter_by(user_id=current_user.id, booked=True)
-        response_dict = {}
         if transactions is None:
             return "booking not exist", 404
+        response_dict = {}
         for transaction in transactions:
             response_dict[transaction.id] = {
                 "ticket_id": transaction.ticket_id,
                 "user_id": transaction.user_id,
                 "booked": transaction.booked
             }
-        return response_dict
+        return response_dict, 200
 
     @jwt_required
     def post(self):

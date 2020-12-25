@@ -14,7 +14,7 @@ class UserByIDRasource(Resource):
         current_user = User.query.filter_by(username=current_user_name).first()
         if Rights.query.filter_by(user_id=current_user.id).first() is None:
             return "you not have any admin rights"
-        if Rights.query.filter_by(user_id=current_user.id).first() is  None and current_user_name is not 'admin':
+        if Rights.query.filter_by(user_id=current_user.id).first() is None and current_user_name != 'admin':
             return "you not had rights for this request"
         user = User.query.filter_by(id=id).first()
         if not user:

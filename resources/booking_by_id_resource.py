@@ -11,10 +11,7 @@ from flask_jwt_extended import (
 class BookingByIDRasource(Resource):
     @jwt_required
     def get(self, id):
-
-        current_user_name = get_jwt_identity()
-        current_user = User.query.filter_by(username=current_user_name).first()
-        transaction = Transaction.query.filter_by(id=id, booked=True, user_id=current_user.id).first()
+        transaction = Transaction.query.filter_by(id=id, booked=True, user_id=User.query.filter_by(username=get_jwt_identity()).first().id).first()
         ticket = Ticket.query.filter_by(id=transaction.ticket_id).first()
         if ticket is None:
             return "booking not exist", 404
