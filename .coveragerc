@@ -1,0 +1,17 @@
+[run]
+omit =
+    */site-packages/*,
+    lab/*,
+    */migrations/*,
+    */auth,
+    */test_api.py,
+
+
+[report]
+omit =
+    */site-packages/*,
+    lab/*,
+    */migrations,
+    */auth,
+    */test_api.py,
+

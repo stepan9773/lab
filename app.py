@@ -4,12 +4,16 @@ from flask_restful import Api
 from flask_login import  UserMixin
 
 from flask_migrate import Migrate
+
+
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
-from flask import request,jsonify
+
+
 
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -38,13 +42,14 @@ def create_app(config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'postgresql://postgres:1234@localhost:5432/booking_db'
     app.config['SECRET_KEY'] = 'stepan'
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     app.config.from_object(config)
     app.logger_name = __name__
     db.init_app(app)
     migrate.init_app(app, db)
 
     register_smoke_rotes(api)
-
+    cl = app.test_client()
 
 
 
@@ -62,7 +67,7 @@ def create_app(config=None):
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-    return app
+    return app , cl
 
 
 class Ticket(db.Model):
@@ -71,6 +76,8 @@ class Ticket(db.Model):
     date = db.Column(db.String(50))
     price = db.Column(db.REAL)
     seat = db.Column(db.INTEGER)
+
+
 
 
 class Transaction(db.Model):
@@ -92,36 +99,30 @@ class Rights(db.Model):
     admin = db.Column(db.Boolean)
 
 
-from resources.user_by_id_resource import UserByIDRasource
-from resources.booking_resource import BookingRasource
-from resources.booking_by_id_resource import BookingByIDRasource
-from resources.declime_book_resource import DeclimeBooking
-from resources.buy_by_id_resource import BuyByIDRasource
-from resources.buy_resource import BuyRasource
-from resources.user_resource import UserRasource
-from resources.login_resource import LoginResource
-from resources.signup_resource import SignupResource
-from resources.administrator_resource import AdminResource
-from resources.SmokeResource import SmokeResources
 def register_smoke_rotes(api):
-    """
-    Connect to API resource Smoke
-    args:
-        api: API which connect the resource Smoke
-    Returns:
-         None
-    """
+    from resources.user_by_id_resource import UserByIDRasource
+    from resources.booking_resource import BookingRasource
+    from resources.booking_by_id_resource import BookingByIDRasource
+    from resources.buy_by_id_resource import BuyByIDRasource
+    from resources.buy_resource import BuyRasource
+    from resources.user_resource import UserRasource
+    from resources.login_resource import LoginResource
+    from resources.signup_resource import SignupResource
+    from resources.SmokeResource import SmokeResources
+
     api.add_resource(SmokeResources, "/smoke")
     api.add_resource(UserByIDRasource, "/user/<int:id>")
     api.add_resource(BookingRasource, "/book")
     api.add_resource(BookingByIDRasource, "/book/<int:id>")
-    api.add_resource(DeclimeBooking, '/decline_book')
+
     api.add_resource(BuyRasource, '/buy')
     api.add_resource(BuyByIDRasource, '/buy/<int:id>')
     api.add_resource(UserRasource, '/user')
     api.add_resource(LoginResource, '/login')
     api.add_resource(SignupResource, '/signup')
-    api.add_resource(AdminResource, '/admin')
+
+
+
 def import_bluprint_resource():
 
 

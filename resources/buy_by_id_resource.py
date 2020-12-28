@@ -14,12 +14,11 @@ class BuyByIDRasource(Resource):
         current_user_name = get_jwt_identity()
         current_user = User.query.filter_by(username=current_user_name).first()
 
-        transaction = Transaction.query.filter_by(id=id, booked=False, user_id=current_user.id).first()
+        transaction = Transaction.query.filter_by(id=id, booked=False).first()
         if transaction is None:
             return "transaction not exist", 404
         ticket = Ticket.query.filter_by(id=transaction.ticket_id).first()
-        if ticket is None:
-            return "tickets not found", 404
+
         return {
             "id": ticket.id,
             "place": ticket.seat,
