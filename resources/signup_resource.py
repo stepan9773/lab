@@ -25,3 +25,4 @@ class SignupResource(Resource):
         db.session.commit()
 
         return "create sucssesfull", 200
+

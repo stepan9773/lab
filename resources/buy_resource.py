@@ -17,8 +17,7 @@ class BuyRasource(Resource):
         current_user = User.query.filter_by(username=current_user_name).first()
 
         transactions = Transaction.query.filter_by(user_id=current_user.id, booked=False)
-        if transactions is None:
-            return "transaction not exist"
+
         response_dict = {}
         for transaction in transactions:
             response_dict[transaction.id] = {
@@ -32,8 +31,6 @@ class BuyRasource(Resource):
     def post(self):
         current_user_name = get_jwt_identity()
         current_user = User.query.filter_by(username=current_user_name).first()
-        if current_user.username == 'user':
-            return "tou must loged in firstlly"
 
         data = request.get_json()
         title = data['title']

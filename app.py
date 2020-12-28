@@ -4,12 +4,16 @@ from flask_restful import Api
 from flask_login import  UserMixin
 
 from flask_migrate import Migrate
+
+
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
-from flask import request,jsonify
+
+
 
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -74,6 +78,8 @@ class Ticket(db.Model):
     seat = db.Column(db.INTEGER)
 
 
+
+
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.INTEGER, db.ForeignKey("user.id"))
@@ -93,36 +99,30 @@ class Rights(db.Model):
     admin = db.Column(db.Boolean)
 
 
-from resources.user_by_id_resource import UserByIDRasource
-from resources.booking_resource import BookingRasource
-from resources.booking_by_id_resource import BookingByIDRasource
-from resources.declime_book_resource import DeclimeBooking
-from resources.buy_by_id_resource import BuyByIDRasource
-from resources.buy_resource import BuyRasource
-from resources.user_resource import UserRasource
-from resources.login_resource import LoginResource
-from resources.signup_resource import SignupResource
-from resources.administrator_resource import AdminResource
-from resources.SmokeResource import SmokeResources
 def register_smoke_rotes(api):
-    """
-    Connect to API resource Smoke
-    args:
-        api: API which connect the resource Smoke
-    Returns:
-         None
-    """
+    from resources.user_by_id_resource import UserByIDRasource
+    from resources.booking_resource import BookingRasource
+    from resources.booking_by_id_resource import BookingByIDRasource
+    from resources.buy_by_id_resource import BuyByIDRasource
+    from resources.buy_resource import BuyRasource
+    from resources.user_resource import UserRasource
+    from resources.login_resource import LoginResource
+    from resources.signup_resource import SignupResource
+    from resources.SmokeResource import SmokeResources
+
     api.add_resource(SmokeResources, "/smoke")
     api.add_resource(UserByIDRasource, "/user/<int:id>")
     api.add_resource(BookingRasource, "/book")
     api.add_resource(BookingByIDRasource, "/book/<int:id>")
-    api.add_resource(DeclimeBooking, '/decline_book')
+
     api.add_resource(BuyRasource, '/buy')
     api.add_resource(BuyByIDRasource, '/buy/<int:id>')
     api.add_resource(UserRasource, '/user')
     api.add_resource(LoginResource, '/login')
     api.add_resource(SignupResource, '/signup')
-    api.add_resource(AdminResource, '/admin')
+
+
+
 def import_bluprint_resource():
 
 

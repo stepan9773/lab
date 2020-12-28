@@ -14,9 +14,6 @@ class BookingRasource(Resource):
     @jwt_required
     def get(self):
         transactions = Transaction.query.filter_by(user_id=User.query.filter_by(username=get_jwt_identity()).first().id, booked=True)
-
-        if transactions is None:
-            return "booking not exist", 404
         response_dict = {}
         for transaction in transactions:
             response_dict[transaction.id] = {
@@ -30,9 +27,7 @@ class BookingRasource(Resource):
     def post(self):
         current_user_name = get_jwt_identity()
         current_user = User.query.filter_by(username=current_user_name).first()
-        if current_user.username == 'user':
-            return "tou must loged in firstlly"
-
+        
         data = request.get_json()
         title = data['title']
         place = data['place']
@@ -56,9 +51,4 @@ class BookingRasource(Resource):
 
         db.session.add(transaction)
         db.session.commit()
-        return {
-            "id": transaction.id,
-            "ticket_id": transaction.ticket_id,
-            "user_id": transaction.user_id,
-            "booked": transaction.booked
-        }
+        return str(transaction.id), 200

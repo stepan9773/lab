@@ -2,9 +2,16 @@
 omit =
     */site-packages/*,
     lab/*,
-    */test_api.py
+    */migrations/*,
+    */auth,
+    */test_api.py,
+
+
 [report]
 omit =
     */site-packages/*,
     lab/*,
-    */test_api.py
+    */migrations,
+    */auth,
+    */test_api.py,
+

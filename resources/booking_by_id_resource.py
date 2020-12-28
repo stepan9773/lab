@@ -13,8 +13,6 @@ class BookingByIDRasource(Resource):
     def get(self, id):
         transaction = Transaction.query.filter_by(id=id, booked=True, user_id=User.query.filter_by(username=get_jwt_identity()).first().id).first()
         ticket = Ticket.query.filter_by(id=transaction.ticket_id).first()
-        if ticket is None:
-            return "booking not exist", 404
         return {
             "id": ticket.id,
             "place": ticket.seat,
